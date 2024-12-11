@@ -14,7 +14,7 @@ export default function Favoritos({ navigation }) {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Favoritos</Text>
+      <Text style={styles.title}>Usuario</Text>
       <ScrollView style={styles.scrollContainer} contentContainerStyle={styles.videoList}>
         <Video type="YouTube" />
         <Video type="Instagram" />
