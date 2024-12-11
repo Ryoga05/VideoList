@@ -14,6 +14,7 @@ const styles = StyleSheet.create({
   button: {
     width: 60,
     height: 60,
+    marginBottom: 100,
     backgroundColor: '#4B4B4B', // Color de fondo (gris oscuro)
     borderRadius: 30, // Hace que el botón sea circular
     justifyContent: 'center',
