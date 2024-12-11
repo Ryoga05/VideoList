@@ -1,6 +1,6 @@
 import React from 'react';
 import { TouchableOpacity, StyleSheet } from 'react-native';
-import Icon from 'react-native-vector-icons/MaterialIcons'; // Asegúrate de instalar react-native-vector-icons
+import Icon from 'react-native-vector-icons/MaterialIcons';
 
 const AddButton = ({ onPress }) => {
   return (
@@ -14,15 +14,10 @@ const styles = StyleSheet.create({
   button: {
     width: 60,
     height: 60,
-    backgroundColor: '#444', // Color de fondo (gris oscuro)
+    backgroundColor: '#4B4B4B', // Color de fondo (gris oscuro)
     borderRadius: 30, // Hace que el botón sea circular
     justifyContent: 'center',
     alignItems: 'center',
-    shadowColor: '#000', // Sombra
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.3,
-    shadowRadius: 3.84,
-    elevation: 5, // Sombra en Android
   },
 });
 

@@ -1,18 +1,18 @@
 import React from 'react';
 import { View, StyleSheet, TouchableOpacity } from 'react-native';
-import { Ionicons } from 'react-native-vector-icons/MaterialIcons';
+import Icon from 'react-native-vector-icons/MaterialIcons';
 
 const Menu = () => {
   return (
     <View style={styles.container}>
       <TouchableOpacity>
-        <Ionicons name="heart-outline" size={36} color="black" />
+        <Icon name="favorite-border" size={36} color="black" />
       </TouchableOpacity>
       <TouchableOpacity>
-        <Ionicons name="menu" size={36} color="white" />
+        <Icon name="menu" size={36} color="white" />
       </TouchableOpacity>
       <TouchableOpacity>
-        <Ionicons name="person-outline" size={36} color="white" />
+        <Icon name="person-outline" size={36} color="white" />
       </TouchableOpacity>
     </View>
   );

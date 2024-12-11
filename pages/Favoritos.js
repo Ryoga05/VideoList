@@ -12,8 +12,8 @@ export default function Favoritos({ navigation }) {
 
   return (
     <View style={styles.container}>
-      <Text>Hola esto es VideoList</Text>
-      <AddButton></AddButton>
+      <Text style={styles.title}>Favoritos</Text>
+      <AddButton/>
       <Menu/>
     </View>
   );
@@ -23,6 +23,12 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#1C1C1C',
+    justifyContent: 'center',
+    alignItems: 'center',
     padding: 16,
+  },
+  title: {
+    color: 'white',
+    fontSize: 32,
   }
 });
