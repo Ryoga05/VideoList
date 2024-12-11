@@ -24,7 +24,7 @@ export default function Favoritos({ navigation }) {
         <Video type="YouTube" />
       </ScrollView>
       <AddButton/>
-      <Menu active="favoritos"/>
+      <Menu active="usuario"/>
     </View>
   );
 };

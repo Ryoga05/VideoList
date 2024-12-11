@@ -2,17 +2,17 @@ import React from 'react';
 import { View, StyleSheet, TouchableOpacity } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
-const Menu = () => {
+const Menu = ({ active }) => {
   return (
     <View style={styles.container}>
       <TouchableOpacity>
-        <Icon name="favorite-border" size={36} color="black" />
+        <Icon name="favorite" size={36} color={active === 'favoritos' ? 'black' : 'white'}/>
       </TouchableOpacity>
       <TouchableOpacity>
-        <Icon name="menu" size={36} color="white" />
+        <Icon name="menu" size={36} color={active === 'listas' ? 'black' : 'white'}/>
       </TouchableOpacity>
       <TouchableOpacity>
-        <Icon name="person-outline" size={36} color="white" />
+        <Icon name="person-outline" size={36} color={active === 'usuario' ? 'black' : 'white'} />
       </TouchableOpacity>
     </View>
   );
