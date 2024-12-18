@@ -8,9 +8,16 @@ import { collection, getDocs, updateDoc, deleteDoc, doc } from 'firebase/firesto
 import Menu from '../components/Menu';
 import AddButton from '../components/AddButton';
 import Video from '../components/Video';
+import AddVideo from '../components/AddVideo';
 
 
 export default function Favoritos({ navigation }) {
+  const [isPopupVisible, setPopupVisible] = useState(false); // Estado para mostrar/ocultar el popup
+
+  const handleAddVideo = (url) => {
+    console.log('URL del video:', url);
+    // Aquí puedes agregar la lógica para manejar la URL ingresada
+  };
 
   return (
     <View style={styles.container}>
@@ -23,7 +30,12 @@ export default function Favoritos({ navigation }) {
         <Video type="YouTube" />
         <Video type="YouTube" />
       </ScrollView>
-      <AddButton/>
+      <AddButton onPress={() => setPopupVisible(true)}/>
+      <AddVideo
+        visible={isPopupVisible}
+        onClose={() => setPopupVisible(false)} // Cierra el popup
+        onAddVideo={handleAddVideo} // Acción al añadir el video
+      />
       <Menu active="favoritos"/>
     </View>
   );
