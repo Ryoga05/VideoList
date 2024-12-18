@@ -28,13 +28,13 @@ const Menu = ({ active }) => {
   return (
     <View style={styles.container}>
       <TouchableOpacity onPress={handleFavoritosPress}>
-        <Icon name="favorite" size={36} color={active === 'favoritos' ? 'black' : 'white'}/>
+        <Icon name={active === 'favoritos' ? 'favorite' : 'favorite-border'} size={36} color={active === 'favoritos' ? 'black' : 'white'}/>
       </TouchableOpacity>
       <TouchableOpacity onPress={handleListasPress}>
         <Icon name="menu" size={36} color={active === 'listas' ? 'black' : 'white'}/>
       </TouchableOpacity>
       <TouchableOpacity onPress={handleUsuarioPress}>
-        <Icon name="person-outline" size={36} color={active === 'usuario' ? 'black' : 'white'} />
+        <Icon name={active === 'usuario' ? 'person' : 'person-outline'} size={36} color={active === 'usuario' ? 'black' : 'white'} />
       </TouchableOpacity>
     </View>
   );
