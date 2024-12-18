@@ -7,7 +7,7 @@ import { collection, getDocs, updateDoc, deleteDoc, doc } from 'firebase/firesto
 
 import Menu from '../components/Menu';
 import AddButton from '../components/AddButton';
-import Video from '../components/Video';
+import List from '../components/List'
 import AddList from '../components/AddList';
 
 
@@ -24,12 +24,14 @@ export default function Favoritos({ navigation }) {
     <View style={styles.container}>
       <Text style={styles.title}>Listas</Text>
       <ScrollView style={styles.scrollContainer} contentContainerStyle={styles.videoList}>
-        <Video type="YouTube" />
-        <Video type="Instagram" />
-        <Video type="YouTube" />
-        <Video type="YouTube" />
-        <Video type="YouTube" />
-        <Video type="YouTube" />
+        <List/>
+        <List/>
+        <List/>
+        <List/>
+        <List/>
+        <List/>
+        <List/>
+        <List/>
       </ScrollView>
       <AddButton onPress={() => setPopupVisible(true)}/>
       <AddList
