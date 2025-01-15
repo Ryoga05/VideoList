@@ -5,7 +5,7 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import placeholderImage from '../assets/placeholder.jpg';
 import { LinearGradient } from 'expo-linear-gradient';
 
-const Video = ({ image, type, onPress }) => {
+const Video = ({ title, image, type, onPress }) => {
   return (    
   <View>
     {type === 'YouTube' ? (
@@ -16,7 +16,7 @@ const Video = ({ image, type, onPress }) => {
         source={image ? { uri: image } : placeholderImage} 
       />
         <View style={styles.textContainer}>
-          <Text style={styles.text}>Title</Text>
+          <Text style={styles.videoTitle}>{title}</Text>
           <Text style={styles.text}>Description</Text>
         </View>
         <TouchableOpacity style={styles.iconContainer} onPress={onPress}>
@@ -36,7 +36,7 @@ const Video = ({ image, type, onPress }) => {
             <FontAwesome name="instagram" size={64} color="white" />
           </TouchableOpacity>
           <View style={styles.textContainer}>
-            <Text style={styles.text}>Title</Text>
+            <Text style={styles.videoTitle}>{title}</Text>
             <Text style={styles.text}>Description</Text>
           </View>
           <TouchableOpacity style={styles.iconContainer} onPress={onPress}>
@@ -93,9 +93,20 @@ const styles = StyleSheet.create({
     width: 80,
     height: 60,
     borderRadius: 10,
+    marginLeft: 20,
+    marginRight: 20,
   },
   textContainer: {
-    marginRight: 80,
+    marginRight: 40,
+    flex: 1, // Asegura que el contenedor tome espacio disponible
+  },
+  videoTitle: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginVertical: 5,
+    flexShrink: 1, // Permite que se reduzca el tamaño del texto
+    flexWrap: 'wrap', // Asegura que el texto se ajuste en varias líneas
   },
   text: {
     color: 'white'
