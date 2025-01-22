@@ -19,9 +19,6 @@ const AddList = ({ visible, onClose, onAddList }) => {
   const [image, setImage] = useState(null);
 
   const handleAddList = () => {
-    console.log('Name:', name);
-    console.log('Description:', description);
-    console.log('selectedImage:', image);
 
     if (!name.trim() || !description.trim()) {
       alert('Por favor llena todos los campos.');

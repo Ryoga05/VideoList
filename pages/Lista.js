@@ -17,7 +17,6 @@ export default function Lista({ route }) {
 
   useEffect(() => {
     if (videos) {
-      console.log('Videos recibidos:', videos); // Aquí puedes manejar los videos
     }
   }, [videos]);
 

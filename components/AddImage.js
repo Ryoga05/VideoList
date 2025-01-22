@@ -15,7 +15,6 @@ const AddImage = ({ placeholder, onImageSelected }) => {
     });
 
     if (!result.canceled) {
-      console.log('Selected image URI:', result.assets[0].uri);
       const imageUri = result.assets[0].uri; // String directo
       setSelectedImage({ uri: imageUri });
       onImageSelected(imageUri); // Pasa el string
