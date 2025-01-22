@@ -4,7 +4,7 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import placeholderImage from '../assets/placeholder.jpg';
 
-const Video = ({ image, title, description, onPress }) => {
+const List = ({ image, title, description, onPress }) => {
   return (    
   <View>
     <View style={styles.container}>
@@ -13,7 +13,7 @@ const Video = ({ image, title, description, onPress }) => {
         source={image ? { uri: image } : placeholderImage} 
         />
         <View style={styles.textContainer}>
-          <Text style={styles.videoTitle}>{title}</Text>
+          <Text style={styles.listTitle}>{title}</Text>
           <Text style={styles.text}>{description}</Text>
         </View>
         <TouchableOpacity style={styles.iconContainer} onPress={onPress}>
@@ -43,16 +43,11 @@ const styles = StyleSheet.create({
     marginLeft: 20,
     marginRight: 20,
   },
-  instagram: {
-    width: 80,
-    height: 60,
-    borderRadius: 10,
-  },
   textContainer: {
     marginRight: 40,
     flex: 1, // Asegura que el contenedor tome espacio disponible
   },
-  videoTitle: {
+  listTitle: {
     color: 'white',
     fontSize: 16,
     fontWeight: 'bold',
@@ -72,4 +67,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Video;
+export default List;

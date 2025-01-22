@@ -15,11 +15,26 @@ export default function Listas({ navigation }) {
   
   const [isPopupVisible, setPopupVisible] = useState(false); // Estado para mostrar/ocultar el popup
   const [lists, setLists] = useState([  // Lista de videos, inicializada como un arreglo de objetos
-      { id: 1, title: "Title", description: "Description", image: null},
-      { id: 2, title: "Title", description: "Description"},
-      { id: 3, title: "Title", description: "Description"},
-      { id: 4, title: "Title", description: "Description"},
-      { id: 5, title: "Title", description: "Description"},
+      { id: 1, title: "Title", description: "Description", image: null, videos: [
+        { id: 1, title: "Title",type: "YouTube", url: "https://www.youtube.com/watch?v=6YLrp2E7ah4", thumbnail: "https://img.youtube.com/vi/6YLrp2E7ah4/0.jpg"},
+        { id: 2, title: "Title",type: "Instagram", url: "https://www.instagram.com/kanauru_/reel/DDpF5JMImr9/" },
+        { id: 3, title: "Title",type: "YouTube", url: "https://www.youtube.com/watch?v=yutRh3wuncs", thumbnail: "https://img.youtube.com/vi/yutRh3wuncs/0.jpg"},]},
+      { id: 2, title: "Title", description: "Description", image: null, videos: [
+                                                                        { id: 1, title: "Video 1", url: "https://example.com/1" },
+                                                                        { id: 2, title: "Video 2", url: "https://example.com/2" },
+                                                                        { id: 3, title: "Video 3", url: "https://example.com/3" },]},
+      { id: 3, title: "Title", description: "Description", image: null, videos: [
+                                                                        { id: 1, title: "Video 1", url: "https://example.com/1" },
+                                                                        { id: 2, title: "Video 2", url: "https://example.com/2" },
+                                                                        { id: 3, title: "Video 3", url: "https://example.com/3" },]},
+      { id: 4, title: "Title", description: "Description", image: null, videos: [
+                                                                        { id: 1, title: "Video 1", url: "https://example.com/1" },
+                                                                        { id: 2, title: "Video 2", url: "https://example.com/2" },
+                                                                        { id: 3, title: "Video 3", url: "https://example.com/3" },]},
+      { id: 5, title: "Title", description: "Description", image: null, videos: [
+                                                                        { id: 1, title: "Video 1", url: "https://example.com/1" },
+                                                                        { id: 2, title: "Video 2", url: "https://example.com/2" },
+                                                                        { id: 3, title: "Video 3", url: "https://example.com/3" },]},
     ]);
 
   const handleAddList = (title, description, image) => {
@@ -32,6 +47,10 @@ export default function Listas({ navigation }) {
     };
 
     setLists([...lists, newList]);
+  };
+
+  const handleListPress = (videos) => {
+    navigation.navigate('Lista', { videos }); // `videos` son los datos que quieres enviar
   };
 
   return (
@@ -49,7 +68,7 @@ export default function Listas({ navigation }) {
                 title={item.title}
                 description={item.description}
                 image={item.image}
-                onPress={() => handleVideoPress(item.url)} // Renderiza el componente Video para cada item en la lista
+                onPress={() => handleListPress(item.videos)} // Renderiza el componente Video para cada item en la lista
               />
             )}
             contentContainerStyle={lists.length === 0 ? { flexGrow: 1, justifyContent: 'center', alignItems: 'center' } : {}}

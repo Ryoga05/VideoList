@@ -11,13 +11,15 @@ import Video from '../components/Video';
 import AddVideo from '../components/AddVideo';
 
 
-export default function Favoritos({ navigation }) {
+export default function Lista({ route }) {
   const [isPopupVisible, setPopupVisible] = useState(false); // Estado para mostrar/ocultar el popup
-  const [videos, setVideos] = useState([  // Lista de videos, inicializada como un arreglo de objetos
-    { id: 1, title: "Title", type: "YouTube", url: "https://www.youtube.com/watch?v=6YLrp2E7ah4", thumbnail: "https://img.youtube.com/vi/6YLrp2E7ah4/0.jpg"},
-    { id: 2, title: "Title",type: "Instagram", url: "https://www.instagram.com/kanauru_/reel/DDpF5JMImr9/" },
-    { id: 3, title: "Title",type: "YouTube", url: "https://www.youtube.com/watch?v=yutRh3wuncs", thumbnail: "https://img.youtube.com/vi/yutRh3wuncs/0.jpg"},
-  ]);
+  const { videos } = route.params; // Recibir los datos de los videos
+
+  useEffect(() => {
+    if (videos) {
+      console.log('Videos recibidos:', videos); // Aquí puedes manejar los videos
+    }
+  }, [videos]);
 
   const isValidURL = (url) => {
     try {
@@ -46,7 +48,7 @@ export default function Favoritos({ navigation }) {
 
     // Generar la miniatura si es un video de YouTube
     const thumbnail = type === "YouTube" ? generateThumbnail(url) : null;
-    const title = await fetchVideoTitle(url);
+    const title = await fetchVideoTitle(url, type);
     const newVideo = {
       id: Date.now(),
       title,
@@ -112,10 +114,10 @@ export default function Favoritos({ navigation }) {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Favoritos</Text>
+      <Text style={styles.title}>Lista</Text>
       <View style={styles.scrollContainer}>
         {videos.length === 0 ? (
-          <Text style={styles.emptyMessage}>No tienes videos favoritos todavía.</Text>
+          <Text style={styles.emptyMessage}>No tienes videos todavía.</Text>
         ) : (
           <FlatList
             data={videos} // Pasa la lista de videos
@@ -138,7 +140,7 @@ export default function Favoritos({ navigation }) {
         onClose={() => setPopupVisible(false)} // Cierra el popup
         onAddVideo={handleAddVideo} // Acción al añadir el video
       />
-      <Menu active="favoritos"/>
+      <Menu active="listas"/>
     </View>
   );
 };

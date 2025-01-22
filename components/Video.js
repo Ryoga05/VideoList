@@ -17,7 +17,6 @@ const Video = ({ title, image, type, onPress }) => {
       />
         <View style={styles.textContainer}>
           <Text style={styles.videoTitle}>{title}</Text>
-          <Text style={styles.text}>Description</Text>
         </View>
         <TouchableOpacity style={styles.iconContainer} onPress={onPress}>
           <Icon name="play-arrow" size={36} color="white" />
@@ -37,7 +36,6 @@ const Video = ({ title, image, type, onPress }) => {
           </TouchableOpacity>
           <View style={styles.textContainer}>
             <Text style={styles.videoTitle}>{title}</Text>
-            <Text style={styles.text}>Description</Text>
           </View>
           <TouchableOpacity style={styles.iconContainer} onPress={onPress}>
             <Icon name="play-arrow" size={36} color="white" />
