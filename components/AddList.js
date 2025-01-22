@@ -1,37 +1,79 @@
 import React, { useState } from 'react';
-import { View, Text, Modal, StyleSheet, TextInput, TouchableOpacity, TouchableWithoutFeedback, Keyboard } from 'react-native';
+import {
+  View,
+  Text,
+  Modal,
+  StyleSheet,
+  TextInput,
+  TouchableOpacity,
+  TouchableWithoutFeedback,
+  Keyboard,
+  Image,
+} from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
+import AddImage from './AddImage';
 
 const AddList = ({ visible, onClose, onAddList }) => {
-  const [name, setName] = useState(''); // Estado para la URL
+  const [name, setName] = useState('');
+  const [description, setDescription] = useState('');
+  const [image, setImage] = useState(null);
 
   const handleAddList = () => {
-    if (name.trim()) {
-      onAddList(name); // Devuelve la URL al componente padre
-      setName(''); // Limpia el input
-      onClose(); // Cierra el popup
+    console.log('Name:', name);
+    console.log('Description:', description);
+    console.log('selectedImage:', image);
+
+    if (!name.trim() || !description.trim()) {
+      alert('Por favor llena todos los campos.');
+      return;
     }
+  
+    if (!image) {
+      alert('Por favor selecciona una imagen.');
+      return;
+    }
+    if (name.trim() && description.trim()) {
+      onAddList(name, description, image); // Devuelve los datos como parámetros separados
+      resetFields(); // Reinicia los campos
+      onClose(); // Cierra el modal
+    }
+  };
+
+  const resetFields = () => {
+    setName('');
+    setDescription('');
+    setImage(null);
   };
 
   return (
     <Modal visible={visible} transparent animationType="fade">
-        <TouchableWithoutFeedback onPress={onClose}>
-            <View style={styles.overlay}>
-                <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-                    <View style={styles.popup}>
-                        <TextInput
-                            style={styles.input}
-                            placeholder="Introduce el nombre de la lista..."
-                            placeholderTextColor="#999"
-                            value={name}
-                            onChangeText={setName}
-                        />
-                        <TouchableOpacity style={styles.button} onPress={handleAddList}>
-                            <Text style={styles.buttonText}>Añadir lista</Text>
-                        </TouchableOpacity>
-                    </View>
-                </TouchableWithoutFeedback>
+      <TouchableWithoutFeedback onPress={onClose}>
+        <View style={styles.overlay}>
+          <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+            <View style={styles.popup}>
+              <AddImage placeholder={require('../assets/placeholder.jpg')} onImageSelected={setImage}/>
+
+              <TextInput
+                style={styles.input}
+                placeholder="Nombre"
+                placeholderTextColor="#999"
+                value={name}
+                onChangeText={setName}
+              />
+              <TextInput
+                style={styles.input}
+                placeholder="Descripción"
+                placeholderTextColor="#999"
+                value={description}
+                onChangeText={setDescription}
+              />
+              <TouchableOpacity style={styles.button} onPress={handleAddList}>
+                <Text style={styles.buttonText}>Crear lista nueva</Text>
+              </TouchableOpacity>
             </View>
-        </TouchableWithoutFeedback>
+          </TouchableWithoutFeedback>
+        </View>
+      </TouchableWithoutFeedback>
     </Modal>
   );
 };
@@ -41,6 +83,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
   popup: {
     width: '80%',
@@ -48,11 +91,6 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     padding: 20,
     alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.3,
-    shadowRadius: 4,
-    elevation: 5,
   },
   input: {
     width: '100%',

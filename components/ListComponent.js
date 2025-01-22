@@ -4,7 +4,7 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import placeholderImage from '../assets/placeholder.jpg';
 
-const Video = ({ image, onPress }) => {
+const Video = ({ image, title, description, onPress }) => {
   return (    
   <View>
     <View style={styles.container}>
@@ -13,8 +13,8 @@ const Video = ({ image, onPress }) => {
         source={image ? { uri: image } : placeholderImage} 
         />
         <View style={styles.textContainer}>
-          <Text style={styles.text}>Title</Text>
-          <Text style={styles.text}>Description</Text>
+          <Text style={styles.videoTitle}>{title}</Text>
+          <Text style={styles.text}>{description}</Text>
         </View>
         <TouchableOpacity style={styles.iconContainer} onPress={onPress}>
           <Icon name="arrow-forward-ios" size={36} color="white" />
@@ -49,7 +49,16 @@ const styles = StyleSheet.create({
     borderRadius: 10,
   },
   textContainer: {
-    marginRight: 80,
+    marginRight: 40,
+    flex: 1, // Asegura que el contenedor tome espacio disponible
+  },
+  videoTitle: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginVertical: 5,
+    flexShrink: 1, // Permite que se reduzca el tamaño del texto
+    flexWrap: 'wrap', // Asegura que el texto se ajuste en varias líneas
   },
   text: {
     color: 'white'

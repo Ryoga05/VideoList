@@ -10,7 +10,7 @@ import AddButton from '../components/AddButton';
 import Video from '../components/Video';
 
 
-export default function Favoritos({ navigation }) {
+export default function Usuario({ navigation }) {
 
   return (
     <View style={styles.container}>
