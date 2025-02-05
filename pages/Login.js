@@ -15,6 +15,10 @@ export default function Login({ navigation }) {
           navigation.navigate('Favoritos');
         }
       });
+
+      // Limpiar los campos de email y password al entrar a la pantalla de Login
+      setEmail('');
+      setPassword('');
     
       // Limpia el observer cuando el componente se desmonta
       return () => unsubscribe();
