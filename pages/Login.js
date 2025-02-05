@@ -1,11 +1,24 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, Image, TextInput, TouchableOpacity, Alert, KeyboardAvoidingView, ScrollView, Platform, TouchableWithoutFeedback, Keyboard } from 'react-native';
-import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
+import { getAuth, signInWithEmailAndPassword, onAuthStateChanged } from 'firebase/auth';
 
 
 export default function Login({ navigation }) {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const auth = getAuth();
+
+    useEffect(() => {
+      const unsubscribe = onAuthStateChanged(auth, (user) => {
+        if (user) {
+          // Si el usuario está autenticado, navega a la pantalla de Favoritos
+          navigation.navigate('Favoritos');
+        }
+      });
+    
+      // Limpia el observer cuando el componente se desmonta
+      return () => unsubscribe();
+    }, []);
 
     const handleLogin = () => {
         const auth = getAuth(); // Obtener la instancia de autenticación
