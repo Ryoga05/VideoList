@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Login from './pages/Login'
+import SignUp from './pages/SignUp'
 import Favoritos from './pages/Favoritos';
 import Listas from './pages/Listas'
 import Usuario from './pages/Usuario'
@@ -18,6 +19,7 @@ export default function App() {
     <NavigationContainer>
       <Stack.Navigator initialRouteName="Login">
         <Stack.Screen name="Login" component={Login} options={{ headerShown: false ,  animation: 'none'}}/>
+        <Stack.Screen name="SignUp" component={SignUp} options={{ headerShown: false ,  animation: 'none'}}/>
         <Stack.Screen name="Favoritos" component={Favoritos} options={{ headerShown: false ,  animation: 'none'}}/>
         <Stack.Screen name="Listas" component={Listas} options={{ headerShown: false ,  animation: 'none'}}/>
         <Stack.Screen name="Usuario" component={Usuario} options={{ headerShown: false ,  animation: 'none'}}/>

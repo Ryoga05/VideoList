@@ -15,10 +15,6 @@ export default function Login({ navigation }) {
           navigation.navigate('Favoritos');
         }
       });
-
-      // Limpiar los campos de email y password al entrar a la pantalla de Login
-      setEmail('');
-      setPassword('');
     
       // Limpia el observer cuando el componente se desmonta
       return () => unsubscribe();
@@ -46,25 +42,28 @@ export default function Login({ navigation }) {
                   <Text style={styles.title}>VideoList</Text>
                   <Image source={require('../assets/Logo.png')} style={styles.logo}/>
                   <View style={styles.loginBox}>
+                    <TouchableOpacity style={styles.signUpButton} onPress={() => navigation.navigate('SignUp')}>
+                      <Text style={styles.signUpText}>Sign Up</Text>
+                    </TouchableOpacity>
                     <TextInput
-                        style={styles.loginInput}
-                        placeholder="Introduce tu correo..."
-                        placeholderTextColor={styles.loginInputText.color}
-                        value={email}
-                        onChangeText={setEmail}
-                        keyboardType="email-address"
-                        autoCapitalize="none"
+                      style={styles.loginInput}
+                      placeholder="Introduce tu correo..."
+                      placeholderTextColor={styles.loginInputText.color}
+                      value={email}
+                      onChangeText={setEmail}
+                      keyboardType="email-address"
+                      autoCapitalize="none"
                     />
                     <TextInput
-                        style={styles.loginInput}
-                        placeholder="Introduce tu contraseña..."
-                        placeholderTextColor={styles.loginInputText.color}
-                        value={password}
-                        onChangeText={setPassword}
-                        secureTextEntry
+                      style={styles.loginInput}
+                      placeholder="Introduce tu contraseña..."
+                      placeholderTextColor={styles.loginInputText.color}
+                      value={password}
+                      onChangeText={setPassword}
+                      secureTextEntry
                     />
                     <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
-                        <Text style={styles.buttonText}>Iniciar Sesión</Text>
+                        <Text style={styles.loginText}>Login</Text>
                     </TouchableOpacity>
                   </View>
                 </View>
@@ -107,14 +106,14 @@ const styles = StyleSheet.create({
     padding: 20,
     borderRadius: 20,
     marginBottom: 20,
-    marginTop: 50,
+    marginTop: 40,
   },
   loginInput: {
     backgroundColor: 'rgba(28, 28, 28, 0.4)', // Fondo con 40% de opacidad
     borderRadius: 15,
     margin: 10,
     padding: 12,
-    minHeight: 75,
+    minHeight: 60,
     width: '90%',
     color: 'white',
   },
@@ -124,15 +123,27 @@ const styles = StyleSheet.create({
   loginButton: {
     backgroundColor: '#1C1C1C',
     borderRadius: 15,
-    margin: 20,
+    margin: 15,
     height: '20%',
     width: '60%',
-    paddingVertical: 15,
     alignItems: 'center',
     justifyContent: 'center'
   },
-  buttonText: {
+  loginText: {
     color: '#FFFFFF',
     fontSize: 16
+  },
+  signUpButton: {
+    backgroundColor: '#1C1C1C',
+    borderRadius: 15,
+    margin: 15,
+    height: '15%',
+    width: '40%',
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+  signUpText: {
+    color: '#FFFFFF',
+    fontSize: 12
   }
 });
