@@ -44,33 +44,29 @@ const AddList = ({ visible, onClose, onAddList }) => {
 
   return (
     <Modal visible={visible} transparent animationType="fade">
-      <TouchableWithoutFeedback onPress={onClose}>
-        <View style={styles.overlay}>
-          <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-            <View style={styles.popup}>
-              <AddImage placeholder={require('../assets/placeholder.jpg')} onImageSelected={setImage}/>
+      <View style={styles.overlay}>
+        <View style={styles.popup}>
+          <AddImage placeholder={require('../assets/placeholder.jpg')} onImageSelected={setImage}/>
 
-              <TextInput
-                style={styles.input}
-                placeholder="Nombre"
-                placeholderTextColor="#999"
-                value={name}
-                onChangeText={setName}
-              />
-              <TextInput
-                style={styles.input}
-                placeholder="Descripción"
-                placeholderTextColor="#999"
-                value={description}
-                onChangeText={setDescription}
-              />
-              <TouchableOpacity style={styles.button} onPress={handleAddList}>
-                <Text style={styles.buttonText}>Crear lista nueva</Text>
-              </TouchableOpacity>
-            </View>
-          </TouchableWithoutFeedback>
+          <TextInput
+            style={styles.input}
+            placeholder="Nombre"
+            placeholderTextColor="#999"
+            value={name}
+            onChangeText={setName}
+          />
+          <TextInput
+            style={styles.input}
+            placeholder="Descripción"
+            placeholderTextColor="#999"
+            value={description}
+            onChangeText={setDescription}
+          />
+          <TouchableOpacity style={styles.button} onPress={handleAddList}>
+            <Text style={styles.buttonText}>Crear lista nueva</Text>
+          </TouchableOpacity>
         </View>
-      </TouchableWithoutFeedback>
+      </View>
     </Modal>
   );
 };

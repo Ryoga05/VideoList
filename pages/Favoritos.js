@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, FlatList, Linking } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, FlatList, Linking, Alert } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
 import { FIREBASE_STORAGE } from '../firebaseConfig'; // Importa la configuración de Firebase
-import { collection, getDocs, updateDoc, deleteDoc, doc } from 'firebase/firestore';
+import { collection, getDocs, addDoc,updateDoc, deleteDoc, doc } from 'firebase/firestore';
+import { auth } from '../firebaseConfig';
 
 import Menu from '../components/Menu';
 import AddButton from '../components/AddButton';
@@ -13,11 +14,27 @@ import AddVideo from '../components/AddVideo';
 
 export default function Favoritos({ navigation }) {
   const [isPopupVisible, setPopupVisible] = useState(false); // Estado para mostrar/ocultar el popup
-  const [videos, setVideos] = useState([  // Lista de videos, inicializada como un arreglo de objetos
-    { id: 1, title: "Title", type: "YouTube", url: "https://www.youtube.com/watch?v=6YLrp2E7ah4", thumbnail: "https://img.youtube.com/vi/6YLrp2E7ah4/0.jpg"},
-    { id: 2, title: "Title",type: "Instagram", url: "https://www.instagram.com/kanauru_/reel/DDpF5JMImr9/" },
-    { id: 3, title: "Title",type: "YouTube", url: "https://www.youtube.com/watch?v=yutRh3wuncs", thumbnail: "https://img.youtube.com/vi/yutRh3wuncs/0.jpg"},
-  ]);
+  const [videos, setVideos] = useState([]);
+
+  useEffect(() => {
+  const fetchVideos = async () => {
+    try {
+      const userEmail = auth.currentUser.email;
+      const querySnapshot = await getDocs(
+        collection(FIREBASE_STORAGE, 'users', userEmail, 'favoritos')
+      );
+      const loadedVideos = [];
+      querySnapshot.forEach((doc) => {
+        loadedVideos.push({ id: doc.id, ...doc.data() });
+      });
+      setVideos(loadedVideos);
+    } catch (error) {
+      Alert.alert('Error', 'No se pudieron cargar los videos favoritos');
+      console.error(error);
+    }
+  };
+  fetchVideos();
+}, []);
 
   const isValidURL = (url) => {
     try {
@@ -55,7 +72,17 @@ export default function Favoritos({ navigation }) {
       thumbnail,
     };
   
-    setVideos([...videos, newVideo]);
+    try {
+      const userEmail = auth.currentUser.email;
+      await addDoc(
+        collection(FIREBASE_STORAGE, 'users', userEmail, 'favoritos'),
+        newVideo
+      );
+      setVideos([...videos, newVideo]);
+    } catch (error) {
+      Alert.alert('Error', 'No se pudo guardar el video');
+      console.error(error);
+    }
   };
 
   const handleVideoPress = (url) => {

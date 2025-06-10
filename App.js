@@ -8,8 +8,8 @@ import Listas from './pages/Listas'
 import Usuario from './pages/Usuario'
 import Lista from './pages/Lista'
 
-import { onAuthStateChanged } from 'firebase/auth';
-import { FIREBASE_AUTH } from './firebaseConfig';
+// import { onAuthStateChanged } from 'firebase/auth';
+// import { FIREBASE_AUTH } from './firebaseConfig';
 
 const Stack = createNativeStackNavigator();
 const InsideStack = createNativeStackNavigator();

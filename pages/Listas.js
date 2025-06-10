@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, FlatList } from 'react-native';
+import { View, Text, StyleSheet, FlatList, Alert } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import { doc, setDoc, getDoc } from 'firebase/firestore';
 
-import { FIREBASE_STORAGE } from '../firebaseConfig'; // Importa la configuración de Firebase
-import { collection, getDocs, updateDoc, deleteDoc, doc } from 'firebase/firestore';
+import { FIREBASE_STORAGE } from '../firebaseConfig';
+import { collection, getDocs, addDoc } from 'firebase/firestore';
+import { auth } from '../firebaseConfig';
 
 import Menu from '../components/Menu';
 import AddButton from '../components/AddButton';
@@ -12,45 +14,71 @@ import AddList from '../components/AddList';
 
 
 export default function Listas({ navigation }) {
-  
-  const [isPopupVisible, setPopupVisible] = useState(false); // Estado para mostrar/ocultar el popup
-  const [lists, setLists] = useState([  // Lista de videos, inicializada como un arreglo de objetos
-      { id: 1, title: "Title", description: "Description", image: null, videos: [
-        { id: 1, title: "Title",type: "YouTube", url: "https://www.youtube.com/watch?v=6YLrp2E7ah4", thumbnail: "https://img.youtube.com/vi/6YLrp2E7ah4/0.jpg"},
-        { id: 2, title: "Title",type: "Instagram", url: "https://www.instagram.com/kanauru_/reel/DDpF5JMImr9/" },
-        { id: 3, title: "Title",type: "YouTube", url: "https://www.youtube.com/watch?v=yutRh3wuncs", thumbnail: "https://img.youtube.com/vi/yutRh3wuncs/0.jpg"},]},
-      { id: 2, title: "Title", description: "Description", image: null, videos: [
-                                                                        { id: 1, title: "Video 1", url: "https://example.com/1" },
-                                                                        { id: 2, title: "Video 2", url: "https://example.com/2" },
-                                                                        { id: 3, title: "Video 3", url: "https://example.com/3" },]},
-      { id: 3, title: "Title", description: "Description", image: null, videos: [
-                                                                        { id: 1, title: "Video 1", url: "https://example.com/1" },
-                                                                        { id: 2, title: "Video 2", url: "https://example.com/2" },
-                                                                        { id: 3, title: "Video 3", url: "https://example.com/3" },]},
-      { id: 4, title: "Title", description: "Description", image: null, videos: [
-                                                                        { id: 1, title: "Video 1", url: "https://example.com/1" },
-                                                                        { id: 2, title: "Video 2", url: "https://example.com/2" },
-                                                                        { id: 3, title: "Video 3", url: "https://example.com/3" },]},
-      { id: 5, title: "Title", description: "Description", image: null, videos: [
-                                                                        { id: 1, title: "Video 1", url: "https://example.com/1" },
-                                                                        { id: 2, title: "Video 2", url: "https://example.com/2" },
-                                                                        { id: 3, title: "Video 3", url: "https://example.com/3" },]},
-    ]);
+  const [isPopupVisible, setPopupVisible] = useState(false);
+  const [lists, setLists] = useState([]);
 
-  const handleAddList = (title, description, image) => {
-    
-    const newList = {
-      id: Date.now(),
-      title,
-      description,
-      image
+  // Leer listas del usuario actual al montar el componente
+  useEffect(() => {
+    const fetchLists = async () => {
+      try {
+        const userEmail = auth.currentUser.email;
+        const querySnapshot = await getDocs(
+          collection(FIREBASE_STORAGE, 'users', userEmail, 'listas')
+        );
+        const loadedLists = [];
+        querySnapshot.forEach((doc) => {
+          loadedLists.push({ id: doc.id, ...doc.data() });
+        });
+        setLists(loadedLists);
+      } catch (error) {
+        Alert.alert('Error', 'No se pudieron cargar las listas');
+        console.error(error);
+      }
     };
+    fetchLists();
+  }, []);
 
-    setLists([...lists, newList]);
+  // Guardar una nueva lista en Firestore
+  const handleAddList = async (title, description, image) => {
+    try {
+      const userEmail = auth.currentUser.email;
+      const newList = {
+        title,
+        description,
+        image,
+        videos: [],
+      };
+      const docRef = await addDoc(
+        collection(FIREBASE_STORAGE, 'users', userEmail, 'listas'),
+        newList
+      );
+      setLists([...lists, { id: docRef.id, ...newList }]);
+    } catch (error) {
+      Alert.alert('Error', 'No se pudo guardar la lista');
+      console.error(error);
+    }
   };
 
-  const handleListPress = (videos) => {
-    navigation.navigate('Lista', { videos }); // `videos` son los datos que quieres enviar
+  const handleListPress = (item) => {
+    navigation.navigate('Lista', { listaId: item.id });
+  };
+
+  const handleAddVideo = async (listaId, newVideo) => {
+    try {
+      const userEmail = auth.currentUser.email;
+      const listaRef = doc(FIREBASE_STORAGE, 'users', userEmail, 'listas', listaId);
+      const listaSnap = await getDoc(listaRef);
+      let currentVideos = [];
+      if (listaSnap.exists()) {
+        currentVideos = listaSnap.data().videos || [];
+      }
+      const updatedVideos = [...currentVideos, newVideo];
+      await setDoc(listaRef, { videos: updatedVideos }, { merge: true });
+      setVideos(updatedVideos);
+    } catch (error) {
+      Alert.alert('Error', 'No se pudo agregar el video a la lista');
+      console.error(error);
+    }
   };
 
   return (
@@ -61,27 +89,27 @@ export default function Listas({ navigation }) {
           <Text style={styles.emptyMessage}>No tienes listas todavía.</Text>
         ) : (
           <FlatList
-            data={lists} // Pasa la lista de listas
-            keyExtractor={(item) => item.id.toString()} // Especifica cómo extraer la clave única de cada item
+            data={lists}
+            keyExtractor={(item) => item.id.toString()}
             renderItem={({ item }) => (
-              <List 
+              <List
                 title={item.title}
                 description={item.description}
                 image={item.image}
-                onPress={() => handleListPress(item.videos)} // Renderiza el componente Video para cada item en la lista
+                onPress={() => handleListPress(item)}
               />
             )}
             contentContainerStyle={lists.length === 0 ? { flexGrow: 1, justifyContent: 'center', alignItems: 'center' } : {}}
           />
         )}
       </View>
-      <AddButton onPress={() => setPopupVisible(true)}/>
+      <AddButton onPress={() => setPopupVisible(true)} />
       <AddList
         visible={isPopupVisible}
-        onClose={() => setPopupVisible(false)} // Cierra el popup
-        onAddList={(title, description, image) => handleAddList(title, description, image)} // Acción al añadir el video
+        onClose={() => setPopupVisible(false)}
+        onAddList={handleAddList}
       />
-      <Menu active="listas"/>
+      <Menu active="listas" />
     </View>
   );
 };

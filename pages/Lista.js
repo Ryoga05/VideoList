@@ -1,24 +1,42 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, FlatList, Linking } from 'react-native';
-import Icon from 'react-native-vector-icons/MaterialIcons';
-
-import { FIREBASE_STORAGE } from '../firebaseConfig'; // Importa la configuración de Firebase
-import { collection, getDocs, updateDoc, deleteDoc, doc } from 'firebase/firestore';
+import { View, Text, StyleSheet, FlatList, Linking, Alert } from 'react-native';
+import { FIREBASE_STORAGE, auth } from '../firebaseConfig';
+import { doc, getDoc, setDoc } from 'firebase/firestore';
 
 import Menu from '../components/Menu';
 import AddButton from '../components/AddButton';
 import Video from '../components/Video';
 import AddVideo from '../components/AddVideo';
 
+export default function Lista({ route, navigation }) {
+  const { listaId } = route.params; // Debes pasar listaId al navegar
+  const [isPopupVisible, setPopupVisible] = useState(false);
+  const [videos, setVideos] = useState([]);
 
-export default function Lista({ route }) {
-  const [isPopupVisible, setPopupVisible] = useState(false); // Estado para mostrar/ocultar el popup
-  const { videos } = route.params; // Recibir los datos de los videos
-
+  // Leer los videos de la lista desde Firestore
   useEffect(() => {
-    if (videos) {
-    }
-  }, [videos]);
+    const fetchVideos = async () => {
+      try {
+        const userEmail = auth.currentUser?.email;
+        if (!userEmail || !listaId) {
+          Alert.alert('Error', 'Faltan datos de usuario o lista');
+          setVideos([]);
+          return;
+        }
+        const listaRef = doc(FIREBASE_STORAGE, 'users', userEmail, 'listas', listaId);
+        const listaSnap = await getDoc(listaRef);
+        if (listaSnap.exists()) {
+          setVideos(listaSnap.data().videos || []);
+        } else {
+          setVideos([]);
+        }
+      } catch (error) {
+        Alert.alert('Error', 'No se pudieron cargar los videos de la lista');
+        console.error(error);
+      }
+    };
+    fetchVideos();
+  }, [listaId]);
 
   const isValidURL = (url) => {
     try {
@@ -45,7 +63,6 @@ export default function Lista({ route }) {
       return;
     }
 
-    // Generar la miniatura si es un video de YouTube
     const thumbnail = type === "YouTube" ? generateThumbnail(url) : null;
     const title = await fetchVideoTitle(url, type);
     const newVideo = {
@@ -55,12 +72,32 @@ export default function Lista({ route }) {
       url,
       thumbnail,
     };
-  
-    setVideos([...videos, newVideo]);
+
+    try {
+      const userEmail = auth.currentUser?.email;
+      if (!userEmail || !listaId) {
+        Alert.alert('Error', 'Faltan datos de usuario o lista');
+        return;
+      }
+      const listaRef = doc(FIREBASE_STORAGE, 'users', userEmail, 'listas', listaId);
+      const listaSnap = await getDoc(listaRef);
+      let currentVideos = [];
+      if (listaSnap.exists()) {
+        currentVideos = listaSnap.data().videos || [];
+      }
+      const updatedVideos = [...currentVideos, newVideo];
+      console.log("Guardando videos:", updatedVideos);
+      await setDoc(listaRef, { videos: updatedVideos }, { merge: true });
+      setVideos(updatedVideos);
+      console.log("Guardado correctamente");
+    } catch (error) {
+      Alert.alert('Error', 'No se pudo guardar el video');
+      console.error(error);
+    }
   };
 
   const handleVideoPress = (url) => {
-    Linking.openURL(url) // Abre la URL del video
+    Linking.openURL(url)
       .catch((err) => console.error("Error al intentar abrir la URL: ", err));
   };
 
@@ -68,15 +105,14 @@ export default function Lista({ route }) {
     try {
       let videoId = null;
       if (url.includes("youtu.be")) {
-        videoId = url.split("youtu.be/")[1]?.split("?")[0]; // Extrae el ID de la URL corta
+        videoId = url.split("youtu.be/")[1]?.split("?")[0];
       } else if (url.includes("youtube.com")) {
         if (url.includes("shorts/")) {
-          videoId = url.split("shorts/")[1]?.split("?")[0]; // Para URL de Shorts
+          videoId = url.split("shorts/")[1]?.split("?")[0];
         } else {
-          videoId = url.split("v=")[1]?.split("&")[0]; // Para URL estándar
+          videoId = url.split("v=")[1]?.split("&")[0];
         }
       }
-  
       return videoId ? `https://img.youtube.com/vi/${videoId}/0.jpg` : null;
     } catch (error) {
       console.error("Error al generar la miniatura:", error);
@@ -84,30 +120,28 @@ export default function Lista({ route }) {
     }
   };
 
-  //Genera el titulo del video en base a la URL
   const fetchVideoTitle = async (url) => {
     try {
       let videoId = null;
       if (url.includes("youtu.be")) {
-        videoId = url.split("youtu.be/")[1]?.split("?")[0]; // Extrae el ID de la URL corta
+        videoId = url.split("youtu.be/")[1]?.split("?")[0];
       } else if (url.includes("youtube.com")) {
         if (url.includes("shorts/")) {
-          videoId = url.split("shorts/")[1]?.split("?")[0]; // Para URL de Shorts
+          videoId = url.split("shorts/")[1]?.split("?")[0];
         } else {
-          videoId = url.split("v=")[1]?.split("&")[0]; // Para URL estándar
+          videoId = url.split("v=")[1]?.split("&")[0];
         }
       }
-  
       if (videoId) {
         const response = await fetch(`https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v=${videoId}&format=json`);
         const data = await response.json();
-        return data.title; // El título del video
+        return data.title;
       } else {
-        return "Título no disponible"; // Título genérico en caso de error
+        return "Título no disponible";
       }
     } catch (error) {
       console.error("Error al obtener el título:", error);
-      return "Título no disponible"; // Título genérico en caso de error
+      return "Título no disponible";
     }
   };
 
@@ -119,30 +153,30 @@ export default function Lista({ route }) {
           <Text style={styles.emptyMessage}>No tienes videos todavía.</Text>
         ) : (
           <FlatList
-            data={videos} // Pasa la lista de videos
-            keyExtractor={(item) => item.id.toString()} // Especifica cómo extraer la clave única de cada item
+            data={videos}
+            keyExtractor={(item) => item.id.toString()}
             renderItem={({ item }) => (
-              <Video 
+              <Video
                 title={item.title}
-                image={item.thumbnail} 
-                type={item.type} 
-                onPress={() => handleVideoPress(item.url)} // Renderiza el componente Video para cada item en la lista
+                image={item.thumbnail}
+                type={item.type}
+                onPress={() => handleVideoPress(item.url)}
               />
             )}
             contentContainerStyle={videos.length === 0 ? { flexGrow: 1, justifyContent: 'center', alignItems: 'center' } : {}}
           />
         )}
       </View>
-      <AddButton onPress={() => setPopupVisible(true)}/>
+      <AddButton onPress={() => setPopupVisible(true)} />
       <AddVideo
         visible={isPopupVisible}
-        onClose={() => setPopupVisible(false)} // Cierra el popup
-        onAddVideo={handleAddVideo} // Acción al añadir el video
+        onClose={() => setPopupVisible(false)}
+        onAddVideo={handleAddVideo}
       />
-      <Menu active="listas"/>
+      <Menu active="listas" />
     </View>
   );
-};
+}
 
 const styles = StyleSheet.create({
   container: {

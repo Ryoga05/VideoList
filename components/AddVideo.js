@@ -14,24 +14,20 @@ const AddVideo = ({ visible, onClose, onAddVideo }) => {
 
   return (
     <Modal visible={visible} transparent animationType="fade">
-        <TouchableWithoutFeedback onPress={onClose}>
-            <View style={styles.overlay}>
-                <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-                    <View style={styles.popup}>
-                        <TextInput
-                            style={styles.input}
-                            placeholder="Introduce la URL del video..."
-                            placeholderTextColor="#999"
-                            value={url}
-                            onChangeText={setUrl}
-                        />
-                        <TouchableOpacity style={styles.button} onPress={handleAddVideo}>
-                            <Text style={styles.buttonText}>Añadir video</Text>
-                        </TouchableOpacity>
-                    </View>
-                </TouchableWithoutFeedback>
+      <View style={styles.overlay}>
+            <View style={styles.popup}>
+                <TextInput
+                    style={styles.input}
+                    placeholder="Introduce la URL del video..."
+                    placeholderTextColor="#999"
+                    value={url}
+                    onChangeText={setUrl}
+                />
+                <TouchableOpacity style={styles.button} onPress={handleAddVideo}>
+                    <Text style={styles.buttonText}>Añadir video</Text>
+                </TouchableOpacity>
             </View>
-        </TouchableWithoutFeedback>
+      </View>
     </Modal>
   );
 };

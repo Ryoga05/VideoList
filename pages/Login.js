@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, Image, TextInput, TouchableOpacity, Alert, KeyboardAvoidingView, ScrollView, Platform, TouchableWithoutFeedback, Keyboard } from 'react-native';
-import { getAuth, signInWithEmailAndPassword, onAuthStateChanged } from 'firebase/auth';
+import { auth } from '../firebaseConfig';
+import { signInWithEmailAndPassword, onAuthStateChanged } from 'firebase/auth';
 
 
 export default function Login({ navigation }) {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const auth = getAuth();
+    
 
     useEffect(() => {
       const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -21,8 +22,7 @@ export default function Login({ navigation }) {
     }, []);
 
     const handleLogin = () => {
-        const auth = getAuth(); // Obtener la instancia de autenticación
-
+      console.log('Intentando login...');
         signInWithEmailAndPassword(auth, email, password)
             .then(() => {
                 navigation.navigate('Favoritos'); // Navegar a Favoritos si el login es correcto
@@ -36,39 +36,37 @@ export default function Login({ navigation }) {
     <KeyboardAvoidingView
             behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
             style={{ flex: 1 }}>
-        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
             <ScrollView contentContainerStyle={styles.scrollContainer}>
-                <View style={styles.container}>
-                  <Text style={styles.title}>VideoList</Text>
-                  <Image source={require('../assets/Logo.png')} style={styles.logo}/>
-                  <View style={styles.loginBox}>
-                    <TouchableOpacity style={styles.signUpButton} onPress={() => navigation.navigate('SignUp')}>
-                      <Text style={styles.signUpText}>Sign Up</Text>
-                    </TouchableOpacity>
-                    <TextInput
-                      style={styles.loginInput}
-                      placeholder="Introduce tu correo..."
-                      placeholderTextColor={styles.loginInputText.color}
-                      value={email}
-                      onChangeText={setEmail}
-                      keyboardType="email-address"
-                      autoCapitalize="none"
-                    />
-                    <TextInput
-                      style={styles.loginInput}
-                      placeholder="Introduce tu contraseña..."
-                      placeholderTextColor={styles.loginInputText.color}
-                      value={password}
-                      onChangeText={setPassword}
-                      secureTextEntry
-                    />
-                    <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
-                        <Text style={styles.loginText}>Login</Text>
-                    </TouchableOpacity>
-                  </View>
+              <View style={styles.container}>
+                <Text style={styles.title}>VideoList</Text>
+                <Image source={require('../assets/Logo.png')} style={styles.logo}/>
+                <View style={styles.loginBox}>
+                  <TouchableOpacity style={styles.signUpButton} onPress={() => navigation.navigate('SignUp')}>
+                    <Text style={styles.signUpText}>Sign Up</Text>
+                  </TouchableOpacity>
+                  <TextInput
+                    style={styles.loginInput}
+                    placeholder="Introduce tu correo..."
+                    placeholderTextColor={styles.loginInputText.color}
+                    value={email}
+                    onChangeText={setEmail}
+                    keyboardType="email-address"
+                    autoCapitalize="none"
+                  />
+                  <TextInput
+                    style={styles.loginInput}
+                    placeholder="Introduce tu contraseña..."
+                    placeholderTextColor={styles.loginInputText.color}
+                    value={password}
+                    onChangeText={setPassword}
+                    secureTextEntry
+                  />
+                  <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
+                      <Text style={styles.loginText}>Login</Text>
+                  </TouchableOpacity>
                 </View>
-            </ScrollView>
-        </TouchableWithoutFeedback>
+              </View>
+          </ScrollView>
     </KeyboardAvoidingView>
   );
 };
@@ -98,7 +96,6 @@ const styles = StyleSheet.create({
     borderRadius: 50,
   },
   loginBox: {
-    flex: 1,
     width: '90%',
     justifyContent: 'center',
     alignItems: 'center',

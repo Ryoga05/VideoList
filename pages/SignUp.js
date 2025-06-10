@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, Image, TextInput, TouchableOpacity, Alert, KeyboardAvoidingView, ScrollView, Platform, TouchableWithoutFeedback, Keyboard } from 'react-native';
-import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
+import { auth } from '../firebaseConfig';
+import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { getFirestore, doc, setDoc } from 'firebase/firestore'; 
 
 
@@ -8,10 +9,8 @@ export default function SignUp({ navigation }) {
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const auth = getAuth();
   
   const handleSignUp = async () => {
-    const auth = getAuth();
     const db = getFirestore()
 
     try {
@@ -20,7 +19,7 @@ export default function SignUp({ navigation }) {
       const user = userCredential.user; // El usuario recién creado
       
       // Crear un documento en Firestore con el UID del usuario y el nombre de usuario
-      await setDoc(doc(db, 'users', user.uid), {
+      await setDoc(doc(db, 'users', email), {
         username: username,  // Guardamos el nombre de usuario
       });
       
@@ -37,47 +36,45 @@ export default function SignUp({ navigation }) {
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       style={{ flex: 1 }}>
-      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-        <ScrollView contentContainerStyle={styles.scrollContainer}>
-          <View style={styles.container}>
-            <Text style={styles.title}>VideoList</Text>
-            <Image source={require('../assets/Logo.png')} style={styles.logo}/>
-            <View style={styles.signUpBox}>
-              <TouchableOpacity style={styles.loginButton} onPress={() => navigation.navigate('Login')}>
-                <Text style={styles.loginText}>Login</Text>
-              </TouchableOpacity>
-              <TextInput
-                style={styles.signUpInput}
-                placeholder="Introduce tu nombre de usuario..."
-                placeholderTextColor={styles.SignUpInputText.color}
-                value={username}
-                onChangeText={setUsername}
-                autoCapitalize="none"
-              />
-              <TextInput
-                style={styles.signUpInput}
-                placeholder="Introduce tu correo..."
-                placeholderTextColor={styles.SignUpInputText.color}
-                value={email}
-                onChangeText={setEmail}
-                keyboardType="email-address"
-                autoCapitalize="none"
-              />
-              <TextInput
-                style={styles.signUpInput}
-                placeholder="Introduce tu contraseña..."
-                placeholderTextColor={styles.SignUpInputText.color}
-                value={password}
-                onChangeText={setPassword}
-                secureTextEntry
-              />
-              <TouchableOpacity style={styles.signUpButton} onPress={handleSignUp}>
-                  <Text style={styles.signUpText}>Sign Up</Text>
-              </TouchableOpacity>
-            </View>
+      <ScrollView contentContainerStyle={styles.scrollContainer}>
+        <View style={styles.container}>
+          <Text style={styles.title}>VideoList</Text>
+          <Image source={require('../assets/Logo.png')} style={styles.logo}/>
+          <View style={styles.signUpBox}>
+            <TouchableOpacity style={styles.loginButton} onPress={() => navigation.navigate('Login')}>
+              <Text style={styles.loginText}>Login</Text>
+            </TouchableOpacity>
+            <TextInput
+              style={styles.signUpInput}
+              placeholder="Introduce tu nombre de usuario..."
+              placeholderTextColor={styles.SignUpInputText.color}
+              value={username}
+              onChangeText={setUsername}
+              autoCapitalize="none"
+            />
+            <TextInput
+              style={styles.signUpInput}
+              placeholder="Introduce tu correo..."
+              placeholderTextColor={styles.SignUpInputText.color}
+              value={email}
+              onChangeText={setEmail}
+              keyboardType="email-address"
+              autoCapitalize="none"
+            />
+            <TextInput
+              style={styles.signUpInput}
+              placeholder="Introduce tu contraseña..."
+              placeholderTextColor={styles.SignUpInputText.color}
+              value={password}
+              onChangeText={setPassword}
+              secureTextEntry
+            />
+            <TouchableOpacity style={styles.signUpButton} onPress={handleSignUp}>
+                <Text style={styles.signUpText}>Sign Up</Text>
+            </TouchableOpacity>
           </View>
-        </ScrollView>
-      </TouchableWithoutFeedback>
+        </View>
+      </ScrollView>
     </KeyboardAvoidingView>
   );
 };
