@@ -101,6 +101,29 @@ export default function Lista({ route, navigation }) {
       .catch((err) => console.error("Error al intentar abrir la URL: ", err));
   };
 
+  const handleDeleteVideo = async (videoId) => {
+    try {
+      const userEmail = auth.currentUser?.email;
+      if (!userEmail || !listaId) {
+        Alert.alert('Error', 'Faltan datos de usuario o lista');
+        return;
+      }
+      const listaRef = doc(FIREBASE_STORAGE, 'users', userEmail, 'listas', listaId);
+      const listaSnap = await getDoc(listaRef);
+      let currentVideos = [];
+      if (listaSnap.exists()) {
+        currentVideos = listaSnap.data().videos || [];
+      }
+      // Filtra el video a borrar
+      const updatedVideos = currentVideos.filter((video) => video.id !== videoId);
+      await setDoc(listaRef, { videos: updatedVideos }, { merge: true });
+      setVideos(updatedVideos);
+    } catch (error) {
+      Alert.alert('Error', 'No se pudo borrar el video');
+      console.error(error);
+    }
+  };
+
   const generateThumbnail = (url) => {
     try {
       let videoId = null;
@@ -161,6 +184,7 @@ export default function Lista({ route, navigation }) {
                 image={item.thumbnail}
                 type={item.type}
                 onPress={() => handleVideoPress(item.url)}
+                onDelete={() => handleDeleteVideo(item.id)}
               />
             )}
             contentContainerStyle={videos.length === 0 ? { flexGrow: 1, justifyContent: 'center', alignItems: 'center' } : {}}

@@ -5,7 +5,7 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import placeholderImage from '../assets/placeholder.jpg';
 import { LinearGradient } from 'expo-linear-gradient';
 
-const Video = ({ title, image, type, onPress }) => {
+const Video = ({ title, image, type, onPress, onDelete }) => {
   return (    
   <View>
     {type === 'YouTube' ? (
@@ -20,6 +20,9 @@ const Video = ({ title, image, type, onPress }) => {
         </View>
         <TouchableOpacity style={styles.iconContainer} onPress={onPress}>
           <Icon name="play-arrow" size={36} color="white" />
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.deleteContainer} onPress={onDelete}>
+          <Icon name="delete" size={28} color="red" />
         </TouchableOpacity>
       </View>
     ) : type === 'Instagram' ? (
@@ -39,6 +42,9 @@ const Video = ({ title, image, type, onPress }) => {
           </View>
           <TouchableOpacity style={styles.iconContainer} onPress={onPress}>
             <Icon name="play-arrow" size={36} color="white" />
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.deleteContainer} onPress={onDelete}>
+            <Icon name="delete" size={28} color="red" />
           </TouchableOpacity>
         </View>
       </LinearGradient>
@@ -115,6 +121,13 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: 20,
+  },
+  deleteContainer: {
+    width: 40,
+    height: 40,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 10,
   },
 });
 

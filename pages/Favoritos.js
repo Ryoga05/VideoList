@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, ScrollView, FlatList, Linking, Alert } from 're
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
 import { FIREBASE_STORAGE } from '../firebaseConfig'; // Importa la configuración de Firebase
-import { collection, getDocs, addDoc,updateDoc, deleteDoc, doc } from 'firebase/firestore';
+import { collection, getDocs, addDoc, updateDoc, deleteDoc, doc } from 'firebase/firestore';
 import { auth } from '../firebaseConfig';
 
 import Menu from '../components/Menu';
@@ -17,24 +17,24 @@ export default function Favoritos({ navigation }) {
   const [videos, setVideos] = useState([]);
 
   useEffect(() => {
-  const fetchVideos = async () => {
-    try {
-      const userEmail = auth.currentUser.email;
-      const querySnapshot = await getDocs(
-        collection(FIREBASE_STORAGE, 'users', userEmail, 'favoritos')
-      );
-      const loadedVideos = [];
-      querySnapshot.forEach((doc) => {
-        loadedVideos.push({ id: doc.id, ...doc.data() });
-      });
-      setVideos(loadedVideos);
-    } catch (error) {
-      Alert.alert('Error', 'No se pudieron cargar los videos favoritos');
-      console.error(error);
-    }
-  };
-  fetchVideos();
-}, []);
+    const fetchVideos = async () => {
+      try {
+        const userEmail = auth.currentUser.email;
+        const querySnapshot = await getDocs(
+          collection(FIREBASE_STORAGE, 'users', userEmail, 'favoritos')
+        );
+        const loadedVideos = [];
+        querySnapshot.forEach((doc) => {
+          loadedVideos.push({ id: doc.id, ...doc.data() });
+        });
+        setVideos(loadedVideos);
+      } catch (error) {
+        Alert.alert('Error', 'No se pudieron cargar los videos favoritos');
+        console.error(error);
+      }
+    };
+    fetchVideos();
+  }, []);
 
   const isValidURL = (url) => {
     try {
@@ -88,6 +88,23 @@ export default function Favoritos({ navigation }) {
   const handleVideoPress = (url) => {
     Linking.openURL(url) // Abre la URL del video
       .catch((err) => console.error("Error al intentar abrir la URL: ", err));
+  };
+
+  const handleDeleteVideo = async (videoId) => {
+    try {
+      const userEmail = auth.currentUser?.email;
+      if (!userEmail) {
+        Alert.alert('Error', 'Faltan datos de usuario');
+        return;
+      }
+      // Borra el documento del video favorito
+      await deleteDoc(doc(FIREBASE_STORAGE, 'users', userEmail, 'favoritos', videoId.toString()));
+      // Actualiza el estado local
+      setVideos(videos.filter((video) => video.id !== videoId));
+    } catch (error) {
+      Alert.alert('Error', 'No se pudo borrar el video');
+      console.error(error);
+    }
   };
 
   const generateThumbnail = (url) => {
@@ -153,6 +170,7 @@ export default function Favoritos({ navigation }) {
                 image={item.thumbnail} 
                 type={item.type} 
                 onPress={() => handleVideoPress(item.url)} // Renderiza el componente Video para cada item en la lista
+                onDelete={() => handleDeleteVideo(item.id)}
               />
             )}
             contentContainerStyle={videos.length === 0 ? { flexGrow: 1, justifyContent: 'center', alignItems: 'center' } : {}}
